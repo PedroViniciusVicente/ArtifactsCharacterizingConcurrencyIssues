@@ -50,5 +50,77 @@ In this test, the `LocalizeManager` begins an asynchronous operation via `loadNa
 
 ## Setup
 ```
+git clone https://github.com/ing-bank/lion.git
+cd lion
+git checkout -f 61d6c5fa3343d8fa4d0d90be1482b06f61a524db
 
+nvm use 15
+npx yarn
+<!-- npx yarn test -->
+npm test
+```
+
+go to packages/localize/src/LocalizeManager.js and change
+```
+      obj => {
+        // add data only if we have the promise in cache
+        if (
+          this.__namespaceLoaderPromisesCache[locale] &&
+          this.__namespaceLoaderPromisesCache[locale][namespace] === loaderPromise
+        ) {
+          const data = isLocalizeESModule(obj) ? obj.default : obj;
+          this.addData(locale, namespace, data);
+        }
+      },
+```
+to:
+
+```
+      obj => {
+        const data = isLocalizeESModule(obj) ? obj.default : obj;
+        this.addData(locale, namespace, data);
+      }
+```
+
+go to file packages/localize/test/LocalizeManager.test.js and add the .only to the test "empties storage after reset() is invoked":
+```
+  it.only('empties storage after reset() is invoked', async () => {
+```
+
+create file web-test-runner-single.config.mjs in the root of lion
+```
+import { playwrightLauncher } from '@web/test-runner-playwright';
+
+export default {
+  nodeResolve: true,
+  files: ['packages/localize/test/LocalizeManager.test.js'],
+  browsers: [
+    playwrightLauncher({ product: 'chromium' }),
+  ],
+  testFramework: {
+    config: {
+      timeout: '3000',
+    },
+  },
+};
+```
+
+## Reported flaky tests
+```
+npx wtr --config web-test-runner-single.config.mjs
+```
+
+## Utlized config on run-tests.py
+```
+# ============= CONFIGS =============
+PROJECT_ROOT = "projects/lion"
+LOG_DIRECTORY = "PRs/pr503/logs_lion"
+TOTAL_RUNS = 1000
+LOG_INTERVAL = 20
+
+COMMAND = [
+    'npx', 'wtr', 
+    '--config', 'web-test-runner-single.config.mjs'
+]
+# ===================================
 ```
