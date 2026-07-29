@@ -61,8 +61,49 @@ GITHUB_TOKEN=your_actual_github_personal_access_token_here
 ```
 
 ## Replication Workflow
-
 This section provides a step-by-step guide to replicate our study.
+
+### Sanity Check
+After the initial setup, if the steps were successful, the output should be similar to the following listing, along with the generated file data_repos/race_condition_prs.json containing the necessary information from the initial set of extracted Pull Requests.
+(Note that in this example the search was interrupted after a few seconds, resulting in just 2 PRs matching the criteria).
+
+```
+pedroubuntu@Aspire-A514-54:~/Desktop/GitHub_repo_SBLP$ python3 -m venv venv
+pedroubuntu@Aspire-A514-54:~/Desktop/GitHub_repo_SBLP$ source venv/bin/activate
+(venv) pedroubuntu@Aspire-A514-54:~/Desktop/GitHub_repo_SBLP$ pip install -r requirements.txt
+Collecting certifi==2025.4.26
+  Using cached certifi-2025.4.26-py3-none-any.whl (159 kB)
+Collecting charset-normalizer==3.4.2
+  Using cached charset_normalizer-3.4.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (149 kB)
+Collecting idna==3.10
+  Using cached idna-3.10-py3-none-any.whl (70 kB)
+Collecting python-dotenv==1.1.0
+  Using cached python_dotenv-1.1.0-py3-none-any.whl (20 kB)
+Collecting requests==2.32.3
+  Using cached requests-2.32.3-py3-none-any.whl (64 kB)
+Collecting urllib3==2.4.0
+  Using cached urllib3-2.4.0-py3-none-any.whl (128 kB)
+Installing collected packages: urllib3, python-dotenv, idna, charset-normalizer, certifi, requests
+Successfully installed certifi-2025.4.26 charset-normalizer-3.4.2 idna-3.10 python-dotenv-1.1.0 requests-2.32.3 urllib3-2.4.0
+(venv) pedroubuntu@Aspire-A514-54:~/Desktop/GitHub_repo_SBLP$ python3 github_searches/pr_search.py 
+Starting fresh search (no checkpoint found)
+
+Searching PRs in javascript projects...
+
+Period: 2019-01-01 to 2019-01-08
+Fetching page 1...
+Found 35 PRs in this period
+Match found: https://github.com/zulip/zulip-mobile/pull/3262
+   Test files: ['src/loading/__tests__/loadingReducer-test.js']
+   Terms: ['race condition']
+Match found: https://github.com/nodejs/node/pull/25346
+   Test files: ['deps/v8/test/mjsunit/compiler/regress-888923.js']
+   Terms: ['flaky test']
+^C
+Search interrupted by user
+
+...
+```
 
 ### Data Collection
 
@@ -70,9 +111,9 @@ We have already included the [final, filtered Pull Requests dataset](filtered_ev
 
 1. The initial list of JavaScript projects is sourced from the curated lists detailed in the [awesome nodejs lists](awesome_lists/README.md).
 
-2. A broad search of Pull Requests in JavaScript projects is conducted by searchs using the GitHub API in [pr_search.py](github_searches/pr_search.py).
+2. A broad search of Pull Requests in JavaScript projects is conducted by searchs using the GitHub API in [pr_search.py](github_searches/pr_search.py). The search looks for Pull Requests that mention in its description the following terms: "race condition", "event race", "concurrency bug", "flaky test" or "race bug".
 
-3. The [filter_search.py](github_searches/filter_search.py) script is used to filter all the collected data, filtering for PRs that match our criteria (mention keywords: "event race", "race condition", "concurrency bug", "race bug", "flaky test"; modify test files with keywords: "test", "it", "describe"; and modify JavaScript files with modern resources: "promises", "async", "await").
+3. The [filter_search.py](github_searches/filter_search.py) script is used to filter all the collected data, filtering for PRs that match our criteria (mention keywords: "event race", "race condition", "concurrency bug", "race bug", "flaky test"; modified test files with keywords: "test", "it", "describe"; and modified JavaScript files with modern resources: "promises", "async", "await").
 
 
 ### Flaky Tests Reproduction
