@@ -128,4 +128,4 @@ Our analysis resulted in a dataset of 22 curated bugs that were manually analyze
 - For each project, we have created a guide detailing the classification proccess of each case issue by both authors in a table format, the setup and the logs of the flaky behavior:
 [Classification, Projects Setup and Flakiness Logs](PR_Classifications/README.md).
 
-- To automate the flaky test reproduction protocol, we provide a Python script detailed in [run_tests.py](tests_execution/run_tests.py). The script is used to run the analyzed test multiple times to observe intermittent failures and automatically generate the results logs available in our Google Drive Folders. This is the same tool we used to produce the analysis logs available on Google Drive and to gather the data for Table 1 in our paper.
+- To automate the flaky test reproduction protocol, we provide a Python script detailed in [run_tests.py](tests_execution/run_tests.py). The script is used to run the analyzed test multiple times to observe intermittent failures and automatically generate the results logs available. This is the same tool we used to gather the numerical data for Table 1 in our paper.
