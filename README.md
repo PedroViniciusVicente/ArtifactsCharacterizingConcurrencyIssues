@@ -1,5 +1,6 @@
 [![DOI](https://zenodo.org/badge/985914454.svg)](https://doi.org/10.5281/zenodo.21669775)
 
+
 # Awaiting Trouble: Source Code and Artifacts Repository
 
 This repository contains the source code and artifacts needed to replicate, follow and evaluate the study presented in the paper "Awaiting Trouble: Characterizing Asynchronous Concurrency issues in Modern Promise-based JavaScript Applications", submitted to [CBSoft's 30th Brazilian Symposium on Programming Languages (SBLP 2026)](https://cbsoft.sbc.org.br/2026/pt/symposiums/sblp/call/).
