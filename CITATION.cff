@@ -1,16 +1,16 @@
 cff-version: 1.2.0
-title: "Memory bus simulation scripts"
+title: "Characterizing Concurrency Issues Artifacts"
 version: 1.8.0
 license: "MIT"
 type: software
-abstract: "These are the scripts used to simulate a memory bus"
+abstract: "These are the artifacts used in the paper to characterize concurrency issues in modern JavaScript"
 message: "If you use this software, please cite it as below."
 authors:
-  - given-names: Josiah
-    family-names: Carberry
-    affiliation: Brown University
-    orcid: "https://orcid.org/0000-0002-1825-0097"
+  - given-names: Pedro
+    family-names: Vicente
+    affiliation: Universidade Federal de Sao Carlos
+    orcid: "https://orcid.org/0009-0000-3825-5082"
 keywords:
   - computer science
-  - psychoceramics
-  - journaling filesystems
+  - software engineering
+  - automated tests
