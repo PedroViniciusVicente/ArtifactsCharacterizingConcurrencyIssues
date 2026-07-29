@@ -1,6 +1,0 @@
-=== FAILED TESTS REPORT ===
-
-Total tests executed: 100
-Total failures: 0
-Failure rate: 0.00%
-
