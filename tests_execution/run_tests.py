@@ -4,17 +4,16 @@ import os
 from datetime import datetime
 
 # ============= CONFIGS =============
-PROJECT_ROOT = "projects/flowfuse"
-LOG_DIRECTORY = "PRs/pr1510/logs_flowfuse"
+BASE_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.join(BASE_REPO, "PR_Classifications/Projects/fetch/fetch")
+LOG_DIRECTORY = os.path.join(BASE_REPO, "PR_Classifications")
 TOTAL_RUNS = 1000
 LOG_INTERVAL = 20
 
 COMMAND = [
     'npx', 'mocha', 
-    'test/unit/forge/routes/api/team_spec.js',
-    '--node-option=unhandled-rejections=strict',
-    '-g', 'with all instances and their status'
-    ]
+    'test/core/index.test.js',
+]
 # ===================================
 
 class TestLogger:
