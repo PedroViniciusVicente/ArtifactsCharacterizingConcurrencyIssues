@@ -1,9 +1,9 @@
 cff-version: 1.1.0
-message: "If you use this software, please cite it as below."
+message: "."
 authors:
-- family-names: Joe
-  given-names: Johnson
-orcid: https://orcid.org/0000-0000-0000-0000
-title:
+- family-names: Vicente
+  given-names: Pedro
+orcid: 0009-0000-3825-5082
+title: ArtifactsCharacterizingConcurrencyIssues
 version: v1.0
 date-released: 2026-07-29
