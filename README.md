@@ -33,11 +33,21 @@ Example cases:
 - [pino](PR_Classifications/Projects/pino/logs_nacd_pino/failed_tests_report.txt)
 
 
-## Prerequisites
-- Python 3.x+: For running the data collection scripts.
-- Node.js & npm: For setting up and testing the JavaScript projects. We recommend using *nvm* to manage Node.js versions, as different projects may have different requirements.
-- A GitHub Personal Access Token (PAT): Required for the pr_search.py script to query the GitHub API. Store it in an environment variable (.env).
+## Requirements
+To conduct this research, the following hardware and software specs were employed:
 
+### Hardware
+- **CPU:** 2 Cores / 4 Threads @ 3.00GHz.
+- **RAM:** 8 GB.
+- **Disk Space:** At least 10 GB of free space (to store downloaded project archives, node_modules, and execution logs).
+
+### Software
+- **Operating System:** Linux (tested on Ubuntu 22.04 LTS)
+- **Python:** Version 3.10 or higher for running the data collection scripts.
+- **Node.js & npm:** For setting up and testing the JavaScript projects. We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions, as different projects may have different requirements.
+- **A GitHub Personal Access Token (PAT):** Required for the pr_search.py script to query the GitHub API. Store it in an environment variable (.env).
+
+## Installation
 To setup the environment and install python dependencies:
 ```
 python3 -m venv venv
@@ -45,9 +55,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-[Generate your GitHub Token](https://github.com/settings/tokens), rename file .env.example to .env and include:
+Rename file .env.example to .env and include your GitHub Token ([Generate one here](https://github.com/settings/tokens)).
 ```
-GITHUB_TOKEN=your_github_personal_access_token_here
+GITHUB_TOKEN=your_actual_github_personal_access_token_here
 ```
 
 ## Replication Workflow
