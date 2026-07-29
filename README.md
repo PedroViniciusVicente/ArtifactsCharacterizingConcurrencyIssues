@@ -123,8 +123,7 @@ We have already included the [final, filtered Pull Requests dataset](filtered_ev
 
 Our analysis resulted in a dataset of 22 curated bugs that were manually analyzed.
 
-- The projects pre-fix commit, are available as compacted archives in our Google Drive folder: 
-[Compacted Projects](https://drive.google.com/drive/folders/1X4r3UzZLAkntMeO5bltF-uxXzP-9v28V?usp=sharing).
+- The projects pre-fix commit, are available as compacted archives in our Zenodo CompactedProjectsArchive.zip file.
 
 - For each project, we have created a guide detailing the classification proccess of each case issue by both authors in a table format, the setup and the logs of the flaky behavior:
 [Classification, Projects Setup and Flakiness Logs](PR_Classifications/README.md).
