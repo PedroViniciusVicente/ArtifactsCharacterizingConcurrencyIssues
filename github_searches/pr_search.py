@@ -9,6 +9,8 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from requests.exceptions import RequestException, ConnectionError, Timeout
 import logging
+import os
+from dotenv import load_dotenv
 
 
 LANGUAGES = [
@@ -81,7 +83,7 @@ def safe_api_request(session, url, headers, max_retries=3, base_delay=1):
                     reset_time = int(response.headers['X-RateLimit-Reset'])
                     wait_time = reset_time - time.time() + 1
                     if wait_time > 0:
-                        print(f"⏳ Rate limit reached. Waiting {int(wait_time)} seconds...")
+                        print(f"Rate limit reached. Waiting {int(wait_time)} seconds...")
                         time.sleep(wait_time)
                         continue
             
@@ -89,13 +91,13 @@ def safe_api_request(session, url, headers, max_retries=3, base_delay=1):
             
         except (ConnectionError, Timeout, RequestException) as e:
             wait_time = base_delay * (2 ** attempt)
-            print(f"⚠️ Network error on attempt {attempt + 1}/{max_retries}: {str(e)}")
+            print(f"Network error on attempt {attempt + 1}/{max_retries}: {str(e)}")
             
             if attempt < max_retries - 1:
-                print(f"🔄 Retrying in {wait_time} seconds...")
+                print(f"Retrying in {wait_time} seconds...")
                 time.sleep(wait_time)
             else:
-                print(f"❌ Failed after {max_retries} attempts")
+                print(f"Failed after {max_retries} attempts")
                 raise e
     
     return None
@@ -120,7 +122,7 @@ def fetch_pr_files(pr_api_url, session, headers):
         return js_test_files
         
     except Exception as e:
-        print(f"⚠️ Error fetching files for {pr_api_url}: {str(e)}")
+        print(f"Error fetching files for {pr_api_url}: {str(e)}")
         return []
 
 def process_pr(pr, session, headers):
@@ -164,7 +166,7 @@ def process_pr(pr, session, headers):
         }
         
     except Exception as e:
-        print(f"⚠️ Error processing PR {pr.get('html_url', 'unknown')}: {str(e)}")
+        print(f"Error processing PR {pr.get('html_url', 'unknown')}: {str(e)}")
         return None
 
 def search_github_prs(headers, max_workers=5, save_checkpoint=True):
@@ -196,13 +198,13 @@ def search_github_prs(headers, max_workers=5, save_checkpoint=True):
             collected_prs = checkpoint.get('collected_prs', [])
             seen_pr_urls = set(checkpoint.get('seen_pr_urls', []))
             stats = checkpoint.get('stats', stats)
-            print(f"📂 Loaded checkpoint: {len(collected_prs)} PRs already collected")
+            print(f"Loaded checkpoint: {len(collected_prs)} PRs already collected")
     except FileNotFoundError:
-        print("🆕 Starting fresh search (no checkpoint found)")
+        print("Starting fresh search (no checkpoint found)")
     
     try:
         for lang in LANGUAGES:
-            print(f"\n🔎 Searching PRs in {lang} projects...\n")
+            print(f"\nSearching PRs in {lang} projects...\n")
             
             quoted_phrases = [f'"{phrase}"' for phrase in PR_DESCRIPTION_TERMS]
             search_terms_query = " OR ".join(quoted_phrases)
@@ -213,20 +215,20 @@ def search_github_prs(headers, max_workers=5, save_checkpoint=True):
                 
                 base_url = f"https://api.github.com/search/issues?q={quote(query_str)}&sort=updated&order=desc&per_page=100"
                 
-                print(f"📅 Period: {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
+                print(f"Period: {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
                 
                 url = base_url
                 page = 1
                 
                 while url:
-                    print(f"📄 Fetching page {page}...")
+                    print(f"Fetching page {page}...")
                     
                     try:
                         response = safe_api_request(session, url, headers)
                         
                         if response is None or response.status_code != 200:
                             if response:
-                                print(f"❌ API Error: {response.status_code} - {response.text}")
+                                print(f"API Error: {response.status_code} - {response.text}")
                             stats['errors'] += 1
                             break
                         
@@ -235,7 +237,7 @@ def search_github_prs(headers, max_workers=5, save_checkpoint=True):
                         if page == 1:
                             total_in_period = min(results.get('total_count', 0), 1000)
                             stats['total_found'] += total_in_period
-                            print(f"📊 Found {total_in_period} PRs in this period")
+                            print(f"Found {total_in_period} PRs in this period")
                         
                         for pr in results.get('items', []):
                             if pr['html_url'] in seen_pr_urls:
@@ -261,9 +263,9 @@ def search_github_prs(headers, max_workers=5, save_checkpoint=True):
                                     collected_prs.append(processed_pr)
                                     seen_pr_urls.add(pr['html_url'])
                                     
-                                    print(f"✅ Match found: {pr['html_url']}")
-                                    print(f"   📁 Test files: {processed_pr['js_test_files'][:3]}{'...' if len(processed_pr['js_test_files']) > 3 else ''}")
-                                    print(f"   🏷️ Terms: {processed_pr['matched_terms']}")
+                                    print(f"Match found: {pr['html_url']}")
+                                    print(f"   Test files: {processed_pr['js_test_files'][:3]}{'...' if len(processed_pr['js_test_files']) > 3 else ''}")
+                                    print(f"   Terms: {processed_pr['matched_terms']}")
                             
                             time.sleep(0.2)
                         
@@ -272,15 +274,15 @@ def search_github_prs(headers, max_workers=5, save_checkpoint=True):
                         time.sleep(2)
                     
                     except Exception as e:
-                        print(f"❌ Error processing page {page}: {str(e)}")
+                        print(f"Error processing page {page}: {str(e)}")
                         stats['errors'] += 1
                         time.sleep(5)
                         break
     
     except KeyboardInterrupt:
-        print("\n🛑 Search interrupted by user")
+        print("\nSearch interrupted by user")
     except Exception as e:
-        print(f"\n❌ Unexpected error: {str(e)}")
+        print(f"\nUnexpected error: {str(e)}")
         stats['errors'] += 1
     finally:
         save_final_results(collected_prs, stats)
@@ -305,12 +307,12 @@ def save_checkpoint_data(checkpoint_file, collected_prs, seen_pr_urls, stats):
         with open(checkpoint_file, 'w', encoding='utf-8') as f:
             json.dump(checkpoint_data, f, indent=2, ensure_ascii=False)
     except Exception as e:
-        print(f"⚠️ Failed to save checkpoint: {str(e)}")
+        print(f"Failed to save checkpoint: {str(e)}")
 
 def save_final_results(collected_prs, stats):
 
     print("\n" + "="*60)
-    print("📊 FINAL STATISTICS")
+    print("FINAL STATISTICS")
     print("="*60)
     print(f"Total PRs found by search: {stats['total_found']}")
     print(f"Total PRs processed: {stats['processed']}")
@@ -338,15 +340,31 @@ def save_final_results(collected_prs, stats):
                 "pull_requests": collected_prs
             }, f, indent=2, ensure_ascii=False)
         
-        print(f"\n💾 Results saved to {output_file}")
-        print(f"🎯 Found {len(collected_prs)} PRs matching all criteria!")
+        print(f"\nResults saved to {output_file}")
+        print(f"Found {len(collected_prs)} PRs matching all criteria!")
         
     except Exception as e:
-        print(f"❌ Error saving results: {str(e)}")
+        print(f"Error saving results: {str(e)}")
         try:
             backup_file = "data_repos/race_condition_prs_backup.json"
             with open(backup_file, "w", encoding="utf-8") as f:
                 json.dump(collected_prs, f, indent=2, ensure_ascii=False)
-            print(f"💾 Backup saved to {backup_file}")
+            print(f"Backup saved to {backup_file}")
         except:
-            print("❌ Failed to save backup as well")
+            print("Failed to save backup as well")
+
+def main():
+    
+    load_dotenv()
+    token = os.getenv("GITHUB_TOKEN")
+    
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "Authorization": f"token {token}"
+    }
+
+    search_github_prs(headers)
+
+
+if __name__ == "__main__":
+    main()
